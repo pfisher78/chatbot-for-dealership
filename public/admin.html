@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot Admin — Leads & Appointments</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f5f7; color: #1c1c1e; padding: 24px; }
+    h1 { font-size: 24px; margin-bottom: 4px; }
+    .sub { color: #666; margin-bottom: 20px; font-size: 14px; }
+    .login { max-width: 380px; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+    .login input { width: 100%; padding: 10px 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
+    .login button { width: 100%; padding: 10px; background: #1a4d8f; color: #fff; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; }
+    section { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); overflow-x: auto; }
+    section h2 { font-size: 17px; margin-bottom: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+    th { background: #fafafa; font-weight: 600; white-space: nowrap; }
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+    .badge.pending { background: #fff3d6; color: #8a6200; }
+    .badge.test_drive { background: #e2edff; color: #1a4d8f; }
+    .badge.service { background: #e8f6e9; color: #1e6b2d; }
+    .empty { color: #999; font-size: 13px; padding: 8px 0; }
+    .error { color: #b00020; font-size: 13px; margin-top: 8px; }
+    #refresh { float: right; padding: 6px 14px; border: 1px solid #1a4d8f; color: #1a4d8f; background: #fff; border-radius: 8px; cursor: pointer; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <h1>Chatbot Admin</h1>
+  <p class="sub">Leads and appointments captured by the AI assistant</p>
+
+  <div class="login" id="login">
+    <p style="font-size:14px">Enter the admin token (set via <code>ADMIN_TOKEN</code> in .env):</p>
+    <input type="password" id="token" placeholder="Admin token" autocomplete="current-password">
+    <button onclick="load()">View dashboard</button>
+    <p class="error" id="login-error"></p>
+  </div>
+
+  <div id="dashboard" style="display:none">
+    <button id="refresh" onclick="load()">↻ Refresh</button>
+    <section>
+      <h2>📋 Leads</h2>
+      <div id="leads"></div>
+    </section>
+    <section>
+      <h2>📅 Appointments</h2>
+      <div id="appointments"></div>
+    </section>
+  </div>
+
+  <script>
+    function esc(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+
+    async function fetchAdmin(path, token) {
+      const r = await fetch(path, { headers: { Authorization: 'Bearer ' + token } });
+      if (r.status === 401) throw new Error('Invalid token');
+      if (!r.ok) throw new Error('Request failed');
+      return r.json();
+    }
+
+    function table(rows, cols) {
+      if (!rows.length) return '<p class="empty">Nothing yet.</p>';
+      let html = '<table><tr>' + cols.map(c => '<th>' + esc(c.label) + '</th>').join('') + '</tr>';
+      for (const row of rows) {
+        html += '<tr>' + cols.map(c => '<td>' + c.render(row) + '</td>').join('') + '</tr>';
+      }
+      return html + '</table>';
+    }
+
+    async function load() {
+      const token = document.getElementById('token').value || sessionStorage.getItem('adminToken') || '';
+      try {
+        const [leadsData, apptsData] = await Promise.all([
+          fetchAdmin('/api/admin/leads', token),
+          fetchAdmin('/api/admin/appointments', token)
+        ]);
+        sessionStorage.setItem('adminToken', token);
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+
+        document.getElementById('leads').innerHTML = table(leadsData.leads, [
+          { label: 'When', render: r => esc(new Date(r.createdAt).toLocaleString()) },
+          { label: 'Name', render: r => '<strong>' + esc(r.name) + '</strong>' },
+          { label: 'Phone', render: r => esc(r.phone || '—') },
+          { label: 'Email', render: r => esc(r.email || '—') },
+          { label: 'Interest', render: r => esc(r.interest) },
+          { label: 'Vehicle', render: r => esc(r.vehicleId || '—') },
+          { label: 'Notes', render: r => esc(r.notes || '') }
+        ]);
+
+        document.getElementById('appointments').innerHTML = table(apptsData.appointments, [
+          { label: 'When booked', render: r => esc(new Date(r.createdAt).toLocaleString()) },
+          { label: 'Type', render: r => '<span class="badge ' + esc(r.type) + '">' + esc(r.type.replace('_', ' ')) + '</span>' },
+          { label: 'Customer', render: r => '<strong>' + esc(r.customerName) + '</strong>' },
+          { label: 'Contact', render: r => esc([r.phone, r.email].filter(Boolean).join(' / ') || '—') },
+          { label: 'Vehicle / Service', render: r => esc([r.vehicleDescription, r.serviceNeeded].filter(Boolean).join(' — ')) },
+          { label: 'Requested', render: r => esc(r.requestedDate + ' ' + r.requestedTime) },
+          { label: 'Status', render: r => '<span class="badge pending">' + esc(r.status) + '</span>' },
+          { label: 'Conf. ID', render: r => esc(r.id) }
+        ]);
+      } catch (err) {
+        document.getElementById('login').style.display = 'block';
+        document.getElementById('login-error').textContent = err.message;
+      }
+    }
+
+    if (sessionStorage.getItem('adminToken')) load();
+  </script>
+</body>
+</html>

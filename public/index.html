@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dealership Demo — AI Chat Widget</title>
+  <style>
+    :root {
+      --primary: #1a4d8f;
+      --accent: #e8a33d;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #1c1c1e;
+      background: #f7f7f9;
+    }
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 48px 24px 64px;
+      text-align: center;
+    }
+    header h1 { font-size: 34px; margin-bottom: 8px; }
+    header p { opacity: 0.9; font-size: 17px; }
+    main { max-width: 900px; margin: -32px auto 60px; padding: 0 24px; }
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    .card h2 { font-size: 20px; margin-bottom: 12px; color: var(--primary); }
+    .card p, .card li { line-height: 1.6; color: #444; }
+    .card ul { padding-left: 22px; margin-top: 8px; }
+    .pill {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    code {
+      background: #f0f0f3;
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-size: 13px;
+    }
+    .hint {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <header id="hero">
+    <h1 id="dealer-name">Dealership Demo</h1>
+    <p id="dealer-tagline">AI chat widget demonstration page</p>
+  </header>
+
+  <main>
+    <div class="card">
+      <span class="pill">LIVE DEMO</span>
+      <h2>This page simulates a dealership website</h2>
+      <p>
+        The chat bubble in the corner is the embeddable AI assistant. It runs on Claude and can
+        handle the full customer journey for any dealership:
+      </p>
+      <ul>
+        <li><strong>Stock search</strong> — "Have you got any hybrid SUVs under £22k?"</li>
+        <li><strong>Vehicle details</strong> — "Tell me more about the Sportage."</li>
+        <li><strong>Finance (FCA-compliant)</strong> — presents only the dealer's signed-off representative example with the credit-broker disclosure; never improvises payment figures.</li>
+        <li><strong>Part-exchange valuation</strong> — "What's my 2019 Fiesta with 41k miles worth?"</li>
+        <li><strong>Test drives, servicing &amp; MOT</strong> — "Book me a test drive Saturday at 2pm."</li>
+        <li><strong>Opening hours, directions &amp; offers</strong> — "Are you open Sunday? Any current deals?"</li>
+        <li><strong>Lead capture</strong> — contact details flow straight to the admin dashboard.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Embedding on a real dealership site</h2>
+      <p>One script tag, anywhere on the page:</p>
+      <p style="margin-top:10px"><code>&lt;script src="https://your-chatbot-host/widget.js" async&gt;&lt;/script&gt;</code></p>
+      <p style="margin-top:10px">
+        All branding — colors, logo, bot name, greeting, position — comes from
+        <code>config/dealership.config.json</code> on the server. Reselling to a new dealership
+        means swapping that one file. No code changes.
+      </p>
+    </div>
+
+    <p class="hint">👉 Click the chat bubble in the corner to try it.</p>
+  </main>
+
+  <script>
+    // Theme this demo page from the same white-label config the widget uses.
+    fetch('/api/config').then(r => r.json()).then(cfg => {
+      document.getElementById('dealer-name').textContent = cfg.dealershipName;
+      document.getElementById('dealer-tagline').textContent = cfg.tagline;
+      document.title = cfg.dealershipName + ' — AI Chat Demo';
+      document.documentElement.style.setProperty('--primary', cfg.branding.primaryColor);
+      document.documentElement.style.setProperty('--accent', cfg.branding.accentColor);
+    }).catch(() => {});
+  </script>
+  <script src="/widget.js" async></script>
+</body>
+</html>
