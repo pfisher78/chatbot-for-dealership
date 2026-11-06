@@ -1,0 +1,85 @@
+{
+  "dealership": {
+    "name": "Summit Motors",
+    "tagline": "Your journey starts here",
+    "brands": ["Ford", "Vauxhall", "Kia", "Toyota"],
+    "address": "120 Kirkstall Road, Leeds, LS3 1HS",
+    "phone": "0113 496 0123",
+    "email": "sales@summitmotors.example.co.uk",
+    "website": "https://summitmotors.example.co.uk",
+    "companyNumber": "01234567",
+    "vatNumber": "GB123456789",
+    "hours": {
+      "sales": {
+        "monday": "9:00am - 6:30pm",
+        "tuesday": "9:00am - 6:30pm",
+        "wednesday": "9:00am - 6:30pm",
+        "thursday": "9:00am - 6:30pm",
+        "friday": "9:00am - 6:30pm",
+        "saturday": "9:00am - 5:00pm",
+        "sunday": "10:00am - 4:00pm"
+      },
+      "service": {
+        "monday": "8:00am - 5:30pm",
+        "tuesday": "8:00am - 5:30pm",
+        "wednesday": "8:00am - 5:30pm",
+        "thursday": "8:00am - 5:30pm",
+        "friday": "8:00am - 5:30pm",
+        "saturday": "8:30am - 12:30pm",
+        "sunday": "Closed"
+      }
+    },
+    "pricing": {
+      "vatIncluded": true,
+      "adminFeeGbp": 199,
+      "adminFeeNote": "A £199 admin fee applies to all vehicle sales and is always disclosed up front."
+    },
+    "financing": {
+      "mode": "representative_example",
+      "approvedByDealer": true,
+      "fcaDisclosure": "Summit Motors Ltd is a credit broker, not a lender, authorised and regulated by the Financial Conduct Authority (FRN 123456). We work with a panel of lenders and may receive a commission for introductions, which does not affect the amount you pay. Finance is subject to status; terms and conditions apply; applicants must be 18 or over; a guarantee may be required.",
+      "representativeExample": {
+        "description": "Hire Purchase (HP)",
+        "cashPriceGbp": 15000,
+        "depositGbp": 1500,
+        "amountOfCreditGbp": 13500,
+        "termMonths": 48,
+        "monthlyPaymentGbp": 329.67,
+        "optionToPurchaseFeeGbp": 10,
+        "totalAmountPayableGbp": 17334.16,
+        "aprRepresentativePercent": 9.9,
+        "fixedInterestRatePerAnnumPercent": 5.09
+      }
+    },
+    "specialOffers": [
+      {
+        "title": "£500 deposit contribution on selected Kia models",
+        "details": "When financed through our panel lenders. Subject to status. Ends at the end of this month.",
+        "expires": "end of this month"
+      },
+      {
+        "title": "Free MOT for life",
+        "details": "With any used vehicle purchased over £10,000. Terms apply.",
+        "expires": "ongoing"
+      }
+    ]
+  },
+  "branding": {
+    "primaryColor": "#1a4d8f",
+    "accentColor": "#e8a33d",
+    "backgroundColor": "#ffffff",
+    "textColor": "#1c1c1e",
+    "fontFamily": "'Segoe UI', system-ui, -apple-system, sans-serif",
+    "logoUrl": "",
+    "botName": "Summit Assistant",
+    "botAvatar": "🚗",
+    "widgetPosition": "bottom-right",
+    "greeting": "Hi! I'm the Summit Motors assistant. I can help you browse our stock, book a test drive, value your part-exchange, tell you about finance options, or book your car in for a service or MOT. How can I help?"
+  },
+  "behavior": {
+    "leadCaptureMode": "natural",
+    "afterHoursMessage": "Our team is currently away, but I can still help you browse stock and book appointments — a team member will confirm during opening hours.",
+    "handoffPhone": "0113 496 0123",
+    "languages": ["English"]
+  }
+}
