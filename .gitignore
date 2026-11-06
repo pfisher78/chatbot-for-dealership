@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+data/leads.json
+data/appointments.json
+data/sessions.json
+*.log
